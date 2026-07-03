@@ -8,7 +8,7 @@ from app.core.config import settings
 
 pwd_context = CryptContext(
     schemes=["argon2"],
-    deprecated="auto"
+    deprecated="auto",
 )
 
 
@@ -56,17 +56,16 @@ def create_refresh_token(subject: str) -> str:
     )
 
 
-def decode_token(token: str) -> dict[str, Any]:
-    return jwt.decode(
-        token,
-        settings.SECRET_KEY,
-        algorithms=[settings.ALGORITHM],
-    )
+def decode_token(token: str) -> dict[str, Any] | None:
+    try:
+        return jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+        )
+    except JWTError:
+        return None
 
 
 def verify_token(token: str) -> bool:
-    try:
-        decode_token(token)
-        return True
-    except JWTError:
-        return False
+    return decode_token(token) is not None

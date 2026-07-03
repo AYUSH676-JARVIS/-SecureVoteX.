@@ -15,3 +15,16 @@ class UserRepository:
         db.commit()
         db.refresh(user)
         return user
+
+    @staticmethod
+    def update(db: Session, user: User):
+        db.commit()
+        db.refresh(user)
+        return user
+
+    @staticmethod
+    def increment_failed_attempts(db: Session, user: User):
+        user.failed_login_attempts += 1
+        db.commit()
+        db.refresh(user)
+        return user
